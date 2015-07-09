@@ -60,7 +60,7 @@ def get_original_file(conn, object_type, object_id, file_id):
 
 def populate_metadata(client, conn, script_params):
     object_id = long(script_params["IDs"])
-    file_id = long(script_params["File_ID"])
+    file_annotation_ids = long(script_params["File_Annotations"])
     original_file = get_original_file(
         conn, script_params["Data_Type"], object_id, file_id)
     provider = DownloadingOriginalFileProvider(conn)
@@ -85,13 +85,14 @@ if __name__ == "__main__":
             description="Choose source of images",
             values=dataTypes, default="Plate"),
 
-        scripts.String(
+        scripts.Long(
             "IDs", optional=False, grouping="2",
-            description="List of Image IDs to process."),
+            description="Object ID to process."),
 
-        scripts.String(
-            "File_ID", optional=False, grouping="3", default='',
-            description="File ID containing metadata to populate."),
+        scripts.List(
+            "File_Annotations", optional=False, grouping="3", default='',
+            description="File Annotation IDs containing metadata to populate."
+        ).ofType(long),
 
         version="0.2",
         authors=["Emil Rozbicki"],
